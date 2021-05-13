@@ -46,6 +46,8 @@ class Router:
           
         connectionSocket, addr = self.SERVER_CON.accept()
         self.isServerReady = True
+        self.SERVER_CON = connectionSocket
+        
         print('\n\r server connect ...')
         
 router = Router()
