@@ -28,6 +28,7 @@ class ClientUDP(NetWorkComponents) :
             )
         
         p = Package()
+        p.SetSource(NetWorkComponents(self.IP, self.PORT, self.MAC))
         p.SetDestination(self.ROUTER_NC)
         p.SetProtocol("UDP")
         p.SetMessage(data)

@@ -46,8 +46,10 @@ class Router(NetWorkComponents):
         while True :
             try :
                 data, address = self.CLIENT_CON.recvfrom(4096)
-                
                 package = Package.DecodePackage(data)
+                
+                print("\n\r ROUTER -- Receive from client " + str(Package.DecodePackage(data)) )
+                
                 package.SetSource(NetWorkComponents(self.IP, self.PORT, self.MAC))
                 package.SetDestination(self.SERVER_NC)
                 package.SetProtocol("TCP")
