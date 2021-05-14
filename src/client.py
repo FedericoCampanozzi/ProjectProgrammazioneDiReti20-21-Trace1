@@ -3,27 +3,33 @@ import socket
 from datetime import datetime
 import random
 import commons
+from networkComponents import NetWorkComponents
 from package import Package
 
-class ClientUDP :
+class ClientUDP(NetWorkComponents) :
     ROUTER_CON = None
-    PACKAGE = Package()
+    ROUTER_NC = None
     
-    def __init__(self, sim_ip, sim_mac) :
+    def __init__(self, myBase, router) :
+        
+        self.IP = myBase.GetIP()
+        self.MAC = myBase.GetMAC()
+        self.PORT = myBase.GetPort()
+        
         self.ROUTER_CON = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.ROUTER_CON.connect((commons.LOCALHOST, commons.ROUTER_UDP_PORT))
-        self.PACKAGE.SetProtocol("UDP")
-        self.PACKAGE.SetSourceIP(sim_ip)
-        self.PACKAGE.SetSourceMAC(sim_mac)
-        self.PACKAGE.SetSourcePort(commons.ROUTER_UDP_PORT)
-         
-    def SendData(self) :
-        data = "DateTime : " + datetime.today().strftime('%Y-%m-%d-%H:%M:%S') + " Temperature: " + str(random.randint(-1, 30)) + " gradi Humidity : " + str(random.randint(0, 50)) + " %"
-        self.PACKAGE.SetMessage(data)
-        self.ROUTER_CON.send(self.PACKAGE.Encode())
-        #print("DATA SENT")
-        print("DATA SENT " + str(self.PACKAGE))
-
+        self.ROUTER_NC = router
         
-client1 = ClientUDP("192.168.1.113", "AA:AA:BB:BB:CC:CC")
-client1.SendData()
+    def SendData(self) :
+        data = (
+                "DateTime : " + datetime.today().strftime('%Y-%m-%d-%H:%M:%S') + 
+                " Temperature: " + str(random.randint(-1, 30)) + 
+                " gradi Humidity : " + str(random.randint(0, 50)) + " %"
+            )
+        
+        p = Package()
+        p.SetDestination(self.ROUTER_NC)
+        p.SetProtocol("UDP")
+        p.SetMessage(data)
+        self.ROUTER_CON.send(p.Encode())
+        print("\n\r CLIENT -- PC [" + p.GetSource().GetIP() + "] send data")
