@@ -2,12 +2,12 @@
 import socket
 import commons
 from threading import Thread
+from package import Package
 
 class Router:
     
     SERVER_CON = None
     CLIENT_CON = None
-    isServerReady = False
     
     def __init__ (self):
         
@@ -33,19 +33,24 @@ class Router:
        
     def WaitToReceiveClientsData(self) :       
         print('\n\r waiting to receive message from clients ...')
-        
-        while True:
-            
-            data, address = self.CLIENT_CON.recvfrom(4096)
-            
-            if (self.isServerReady):
-                self.SERVER_CON.send(data)
+        while True :
+            try :
+                data, address = self.CLIENT_CON.recvfrom(4096)
+                package = Package.DecodePackage(data)
+                package.SetDestinationMAC("00:00:00:00:00:00")
+                package.SetDestinationIP("10.10.10.0")
+                package.SetDestinationPort(commons.ROUTER_TCP_PORT)
+                package.SetProtocol("TCP")
+                self.SERVER_CON.send(package.Encode())
+            except Exception as e :
+                print('\n\r server disconnect')
+                print('Error Message : ' + str(e))
+                break
                 
     def WaitToServerConnect(self):
         print('\n\r waiting to server connect ...')
           
         connectionSocket, addr = self.SERVER_CON.accept()
-        self.isServerReady = True
         self.SERVER_CON = connectionSocket
         
         print('\n\r server connect ...')
