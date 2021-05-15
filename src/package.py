@@ -3,67 +3,67 @@ from networkComponents import NetWorkComponents
 
 class Package ():
     
-    SOURCE = NetWorkComponents.EmptyNetWorkComponents()
-    DESTINATION = NetWorkComponents.EmptyNetWorkComponents()
-    PROTOCOL = ""
-    MESSAGE = ""
+    __SOURCE = NetWorkComponents.EmptyNetWorkComponents()
+    __DESTINATION = NetWorkComponents.EmptyNetWorkComponents()
+    __PROTOCOL = ""
+    __MESSAGE = ""
     
     def __init__(self):
-        self.PROTOCOL = ""
-        self.MESSAGE = ""
+        self.__PROTOCOL = ""
+        self.__MESSAGE = ""
     
     def GetSource(self) :
-        return self.SOURCE
+        return self.__SOURCE
     
     def SetSource(self, source):
-        self.SOURCE = source
+        self.__SOURCE = source
         
     def GetDestination(self) :
-        return self.DESTINATION
+        return self.__DESTINATION
     
     def SetDestination(self, destination):
-        self.DESTINATION = destination
+        self.__DESTINATION = destination
         
     def SetProtocol(self, protocol):
-        self.PROTOCOL = protocol
+        self.__PROTOCOL = protocol
         
     def GetProtocol(self):
-        return self.PROTOCOL
+        return self.__PROTOCOL
     
     def SetMessage(self, message):
-        self.MESSAGE = message
+        self.__MESSAGE = message
         
     def GetMessage(self):
-        return self.MESSAGE
+        return self.__MESSAGE
     
     def Encode(self) :
         return (
-                self.SOURCE.GetIP() + ";" + 
-                self.DESTINATION.GetIP() + ";" + 
-                self.SOURCE.GetMAC() + ";" + 
-                self.DESTINATION.GetMAC() +  ";" + 
-                str(self.SOURCE.GetPort()) + ";" +
-                str(self.DESTINATION.GetPort()) + ";" + 
-                self.PROTOCOL + ";" + 
-                self.MESSAGE
+                self.__SOURCE.GetIP() + ";" + 
+                self.__DESTINATION.GetIP() + ";" + 
+                self.__SOURCE.GetMAC() + ";" + 
+                self.__DESTINATION.GetMAC() +  ";" + 
+                str(self.__SOURCE.GetPort()) + ";" +
+                str(self.__DESTINATION.GetPort()) + ";" + 
+                self.__PROTOCOL + ";" + 
+                self.__MESSAGE
             ).encode('utf8')
     
     @staticmethod  
     def DecodePackage(data) :
         vet = data.decode('utf8').split(";")
         p = Package()
-        p.SOURCE.SetIP(vet[0])
-        p.DESTINATION.SetIP(vet[1])
-        p.SOURCE.SetMAC(vet[2])
-        p.DESTINATION.SetMAC(vet[3])
-        p.SOURCE.SetPort(int(vet[4]))
-        p.DESTINATION.SetPort(int(vet[5]))
+        p.GetSource().SetIP(vet[0])
+        p.GetDestination().SetIP(vet[1])
+        p.GetSource().SetMAC(vet[2])
+        p.GetDestination().SetMAC(vet[3])
+        p.GetSource().SetPort(int(vet[4]))
+        p.GetDestination().SetPort(int(vet[5]))
         p.SetProtocol(vet[6])
         p.SetMessage(vet[7])
         return p
     
     def __str__(self) :
-        return ("\n\t\t SOURCE : " + str(self.SOURCE) +
-                "\n\t\t DESTINATION : " + str(self.DESTINATION) +
-                "\n\t\t DATA : " + self.MESSAGE + 
-                "\n\t\t PROTOCOL : " +  self.PROTOCOL )
+        return ("\n\t\t SOURCE : " + str(self.__SOURCE) +
+                "\n\t\t DESTINATION : " + str(self.__DESTINATION) +
+                "\n\t\t DATA : " + self.__MESSAGE + 
+                "\n\t\t PROTOCOL : " +  self.__PROTOCOL )

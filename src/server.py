@@ -8,7 +8,7 @@ from utilities import Utilities
 
 class ServerTCP(NetWorkComponents):
     
-    CON = None
+    __CON = None
     
     def __init__ (self, myBase):
         
@@ -16,20 +16,20 @@ class ServerTCP(NetWorkComponents):
         self.MAC = myBase.GetMAC()
         self.PORT = myBase.GetPort()
         
-        self.CON = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.CON.connect((commons.LOCALHOST, commons.ROUTER_TCP_PORT))
+        self.__CON = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.__CON.connect((commons.LOCALHOST, commons.ROUTER_TCP_PORT))
         
-        tServer = threading.Thread(target = self.WaitToReceiveRouterData)
+        tServer = threading.Thread(target = self.__WaitToReceiveRouterData__)
         tServer.start()
         
         Utilities.PrintAndWrite('\n SERVER -- Server is Online')
         
         tServer.join()
         
-    def WaitToReceiveRouterData(self) : 
+    def __WaitToReceiveRouterData__(self) : 
         while not commons.EXIT_DAEMON:
             try:
-                data = self.CON.recv(commons.BUFFER_SIZE)
+                data = self.__CON.recv(commons.BUFFER_SIZE)
                 
                 if len(data) > 0 :
                     package =  Package.DecodePackage(data)
@@ -37,11 +37,11 @@ class ServerTCP(NetWorkComponents):
                     
             except Exception as e :
                 Utilities.PrintAndWrite('\n SERVER -- Error Message : ' + str(e))
-                self.Close()
+                self.__Close__()
                 break
             
-        self.Close()
+        self.__Close__()
         
-    def Close(self):
+    def __Close__(self):
         Utilities.PrintAndWrite('\n SERVER -- Close Connections')
-        self.CON.close()
+        self.__CON.close()

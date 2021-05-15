@@ -3,14 +3,14 @@ import random
 from utilities import Utilities
 
 class NetWorkComponents():
-    IP = None
-    PORT = None
-    MAC = None
+    __IP = None
+    __PORT = None
+    __MAC = None
     
     def __init__ (self, ip, port, mac):
-        self.IP = ip
-        self.MAC = mac
-        self.PORT = port
+        self.__IP = ip
+        self.__MAC = mac
+        self.__PORT = port
     
     @staticmethod
     def EmptyNetWorkComponents ():
@@ -26,26 +26,26 @@ class NetWorkComponents():
         return NetWorkComponents(ip, port, mac)
         
     def GetIP(self):
-        return self.IP
+        return self.__IP
     
     def SetIP(self , ip):
-        self.IP = ip
+        self.__IP = ip
     
     def GetPort(self):
-        return self.PORT
+        return self.__PORT
     
     def SetPort(self, port):
-        self.PORT = port
+        self.__PORT = port
     
     def GetMAC(self):
-        return self.MAC
+        return self.__MAC
      
     def SetMAC(self, mac):
-        self.MAC = mac
+        self.__MAC = mac
     
     def __str__(self):
         return (
-                "[ IP=" + self.IP + " " +
-                "MAC=" + self.MAC + " " +
-                "PORT=" + str(self.PORT) + " ]"
+                "[ IP=" + self.__IP + " " +
+                "MAC=" + self.__MAC + " " +
+                "PORT=" + str(self.__PORT) + " ]"
             )

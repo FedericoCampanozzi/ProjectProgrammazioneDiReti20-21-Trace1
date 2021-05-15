@@ -8,9 +8,9 @@ from networkComponents import NetWorkComponents
 
 class Router(NetWorkComponents):
     
-    SERVER_CON = None
-    CLIENT_CON = None
-    SERVER_NC = None
+    __SERVER_CON = None
+    __CLIENT_CON = None
+    __SERVER_NC = None
 
     def __init__ (self, myBase, server):
         
@@ -18,19 +18,19 @@ class Router(NetWorkComponents):
         self.MAC = myBase.GetMAC()
         self.PORT = myBase.GetPort()
         
-        self.CLIENT_CON = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.CLIENT_CON.bind((commons.LOCALHOST, commons.ROUTER_UDP_PORT))
+        self.__CLIENT_CON = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.__CLIENT_CON.bind((commons.LOCALHOST, commons.ROUTER_UDP_PORT))
         
-        self.SERVER_CON = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.SERVER_CON.bind((commons.LOCALHOST, commons.ROUTER_TCP_PORT))
-        self.SERVER_CON.listen(1)
+        self.__SERVER_CON = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.__SERVER_CON.bind((commons.LOCALHOST, commons.ROUTER_TCP_PORT))
+        self.__SERVER_CON.listen(1)
         
-        self.SERVER_NC = server
+        self.__SERVER_NC = server
         
         Utilities.PrintAndWrite('\n ROUTER -- Router is Online')
         
-        tClient = threading.Thread(target = self.WaitToReceiveClientsData)
-        tServer = threading.Thread(target = self.WaitToServerConnect)
+        tClient = threading.Thread(target = self.__WaitToReceiveClientsData__)
+        tServer = threading.Thread(target = self.__WaitToServerConnect__)
         
         tClient.start()
         tServer.start()
@@ -40,39 +40,39 @@ class Router(NetWorkComponents):
         
         Utilities.PrintAndWrite('\n ROUTER -- Router is Offline')
        
-    def WaitToReceiveClientsData(self) :       
+    def __WaitToReceiveClientsData__(self) :       
         Utilities.PrintAndWrite('\n ROUTER -- Waiting to receive message from clients ...')
 
         while not commons.EXIT_DAEMON :
             try :
                 
-                data, address = self.CLIENT_CON.recvfrom(commons.BUFFER_SIZE)
+                data, address = self.__CLIENT_CON.recvfrom(commons.BUFFER_SIZE)
                 package = Package.DecodePackage(data)
                 
                 Utilities.Write("\n ROUTER -- " + str(package))                    
                 
                 package.SetSource(NetWorkComponents(self.IP, self.PORT, self.MAC))
-                package.SetDestination(self.SERVER_NC)
+                package.SetDestination(self.__SERVER_NC)
                 package.SetProtocol("TCP")
                 
-                self.SERVER_CON.send(package.Encode())
+                self.__SERVER_CON.send(package.Encode())
                 
             except Exception as e :
                 Utilities.PrintAndWrite('\n ROUTER -- Error Message : ' + str(e))
-                self.Close()
+                self.__Close__()
                 break
             
-        self.Close()
+        self.__Close__()
         
-    def WaitToServerConnect(self):
+    def __WaitToServerConnect__(self):
         Utilities.PrintAndWrite('\n ROUTER -- waiting to server connect ...')
           
-        connectionSocket, addr = self.SERVER_CON.accept()
-        self.SERVER_CON = connectionSocket
+        connectionSocket, addr = self.__SERVER_CON.accept()
+        self.__SERVER_CON = connectionSocket
         
         Utilities.PrintAndWrite('\n ROUTER -- Server Connect ...')
         
-    def Close(self) :
+    def __Close__(self) :
         Utilities.PrintAndWrite('\n ROUTER -- Close Connections')
-        self.SERVER_CON.close()
-        self.CLIENT_CON.close()
+        self.__SERVER_CON.close()
+        self.__CLIENT_CON.close()
