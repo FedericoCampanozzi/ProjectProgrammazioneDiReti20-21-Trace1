@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 import socket
-from datetime import datetime
 import random
+from datetime import datetime
 import commons
+from utilities import Utilities
 from networkComponents import NetWorkComponents
 from package import Package
 
@@ -22,7 +23,7 @@ class ClientUDP(NetWorkComponents) :
         
     def SendData(self) :
         data = (
-                "DateTime : " + datetime.today().strftime('%Y-%m-%d-%H:%M:%S') + 
+                " DateTime : " + datetime.today().strftime('%Y-%m-%d-%H:%M:%S') + 
                 " Temperature: " + str(random.randint(-1, 30)) + 
                 " gradi Humidity : " + str(random.randint(0, 50)) + " %"
             )
@@ -33,4 +34,8 @@ class ClientUDP(NetWorkComponents) :
         p.SetProtocol("UDP")
         p.SetMessage(data)
         self.ROUTER_CON.send(p.Encode())
-        print("\n\r CLIENT -- PC [" + p.GetSource().GetIP() + "] send data")
+        Utilities.Write("\n CLIENT -- PC [" + p.GetSource().GetIP() + "] send data")
+    
+    def Close(self) :
+        Utilities.PrintAndWrite('\n CLIENT -- Close Connections')
+        self.ROUTER_CON.close()

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import random
+from utilities import Utilities
 
 class NetWorkComponents():
     IP = None
@@ -16,19 +17,12 @@ class NetWorkComponents():
         return NetWorkComponents("0.0.0.0", -1, "00:00:00:00:00:00")
         
     @staticmethod
-    def RandomNetWorkComponents ():
-        mac = ""
-        
-        for i in range(0,6) :
-            mac += str(random.randint(0, 255)) + ":"
-        
-        mac = mac[:-1]
-        
-        ip = "192.168.1." + str(random.randint(1, 25))
-        port = random.randint(10_000, 65_536)
-        
-        print("\n\r NC -- MAC : " + mac + " IP : " + ip + " PORT : " + str(port) )
-        
+    def RandomNetWorkComponentsWithoutPort (port):
+        mac = ""        
+        for i in range(0, 6) :
+            mac += (Utilities.Hex(random.randint(0, 15)) + Utilities.Hex(random.randint(0, 15)) + ":")       
+        mac = mac[:-1]        
+        ip = "192.168.1." + str(random.randint(10, 35))       
         return NetWorkComponents(ip, port, mac)
         
     def GetIP(self):
@@ -51,7 +45,7 @@ class NetWorkComponents():
     
     def __str__(self):
         return (
-                "IP : " + self.IP + " " +
-                "MAC : " + self.MAC + " " +
-                "PORT : " + str(self.PORT)
+                "[ IP=" + self.IP + " " +
+                "MAC=" + self.MAC + " " +
+                "PORT=" + str(self.PORT) + " ]"
             )

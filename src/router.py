@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 import socket
+import threading
 import commons
-from threading import Thread
+from utilities import Utilities
 from package import Package
 from networkComponents import NetWorkComponents
 
@@ -9,9 +10,8 @@ class Router(NetWorkComponents):
     
     SERVER_CON = None
     CLIENT_CON = None
-    
     SERVER_NC = None
-    
+
     def __init__ (self, myBase, server):
         
         self.IP = myBase.GetIP()
@@ -27,10 +27,10 @@ class Router(NetWorkComponents):
         
         self.SERVER_NC = server
         
-        print('\n\r ROUTER -- Router is Online')
+        Utilities.PrintAndWrite('\n ROUTER -- Router is Online')
         
-        tClient = Thread(target = self.WaitToReceiveClientsData)
-        tServer = Thread(target = self.WaitToServerConnect)
+        tClient = threading.Thread(target = self.WaitToReceiveClientsData)
+        tServer = threading.Thread(target = self.WaitToServerConnect)
         
         tClient.start()
         tServer.start()
@@ -38,31 +38,41 @@ class Router(NetWorkComponents):
         tClient.join()
         tServer.join()
         
-        print('\n\r ROUTER -- Router is Offline')
+        Utilities.PrintAndWrite('\n ROUTER -- Router is Offline')
        
     def WaitToReceiveClientsData(self) :       
-        print('\n\r ROUTER -- Waiting to receive message from clients ...')
-        
-        while True :
+        Utilities.PrintAndWrite('\n ROUTER -- Waiting to receive message from clients ...')
+
+        while not commons.EXIT_DAEMON :
             try :
-                data, address = self.CLIENT_CON.recvfrom(4096)
+                
+                data, address = self.CLIENT_CON.recvfrom(commons.BUFFER_SIZE)
                 package = Package.DecodePackage(data)
                 
-                print("\n\r ROUTER -- Receive from client " + str(Package.DecodePackage(data)) )
+                Utilities.Write("\n ROUTER -- " + str(package))                    
                 
                 package.SetSource(NetWorkComponents(self.IP, self.PORT, self.MAC))
                 package.SetDestination(self.SERVER_NC)
                 package.SetProtocol("TCP")
                 
                 self.SERVER_CON.send(package.Encode())
-            except Exception as e :
-                print('\n\r ROUTER -- Error Message : ' + str(e))
-                break
                 
+            except Exception as e :
+                Utilities.PrintAndWrite('\n ROUTER -- Error Message : ' + str(e))
+                self.Close()
+                break
+            
+        self.Close()
+        
     def WaitToServerConnect(self):
-        print('\n\r ROUTER -- waiting to server connect ...')
+        Utilities.PrintAndWrite('\n ROUTER -- waiting to server connect ...')
           
         connectionSocket, addr = self.SERVER_CON.accept()
         self.SERVER_CON = connectionSocket
         
-        print('\n\r ROUTER -- Server Connect ...')
+        Utilities.PrintAndWrite('\n ROUTER -- Server Connect ...')
+        
+    def Close(self) :
+        Utilities.PrintAndWrite('\n ROUTER -- Close Connections')
+        self.SERVER_CON.close()
+        self.CLIENT_CON.close()

@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 import socket
+import threading
 import commons
 from package import Package
 from networkComponents import NetWorkComponents
+from utilities import Utilities
 
 class ServerTCP(NetWorkComponents):
     
@@ -16,10 +18,30 @@ class ServerTCP(NetWorkComponents):
         
         self.CON = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.CON.connect((commons.LOCALHOST, commons.ROUTER_TCP_PORT))
-        print('\n\r SERVER -- Server is Online')
-    
-        while True:
-            data = self.CON.recv(1024)
+        
+        tServer = threading.Thread(target = self.WaitToReceiveRouterData)
+        tServer.start()
+        
+        Utilities.PrintAndWrite('\n SERVER -- Server is Online')
+        
+        tServer.join()
+        
+    def WaitToReceiveRouterData(self) : 
+        while not commons.EXIT_DAEMON:
+            try:
+                data = self.CON.recv(commons.BUFFER_SIZE)
+                
+                if len(data) > 0 :
+                    package =  Package.DecodePackage(data)
+                    Utilities.Write("\n SERVER -- " + str(package))
+                    
+            except Exception as e :
+                Utilities.PrintAndWrite('\n SERVER -- Error Message : ' + str(e))
+                self.Close()
+                break
             
-            if len(data) > 0 :
-                print("\n\r SERVER -- Receive from router " + str(Package.DecodePackage(data)) )
+        self.Close()
+        
+    def Close(self):
+        Utilities.PrintAndWrite('\n SERVER -- Close Connections')
+        self.CON.close()
