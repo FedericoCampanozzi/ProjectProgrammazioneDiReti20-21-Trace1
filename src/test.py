@@ -1,6 +1,5 @@
 from threading import Thread
 import time
-import commons
 from utilities import Utilities
 from server import ServerTCP
 from client import ClientUDP
@@ -16,11 +15,11 @@ def RunServer(myBase):
 def RunTest():
     
     Utilities.Reset()
-    commons.EXIT_DAEMON = False
+    Utilities.EXIT_DAEMON = False
     Utilities.PrintAndWrite(" TEST   -- inizio TEST")
     
-    server_nc = NetWorkComponents(commons.SERVER_IP, commons.ROUTER_TCP_PORT, commons.SERVER_MAC)
-    router_nc = NetWorkComponents(commons.ROUTER_IP, commons.ROUTER_TCP_PORT, commons.ROUTER_MAC)
+    server_nc = NetWorkComponents(Utilities.SERVER_IP, Utilities.ROUTER_TCP_PORT, Utilities.SERVER_MAC)
+    router_nc = NetWorkComponents(Utilities.ROUTER_IP, Utilities.ROUTER_TCP_PORT, Utilities.ROUTER_MAC)
     clients = []
     
     Utilities.Write("\n TEST   -- Create Router : " + str(router_nc))
@@ -32,26 +31,26 @@ def RunTest():
     tRouter.start()
     tServer.start()
 
-    time.sleep(commons.N_TEST_WAIT_SERVER_CON)
+    time.sleep(Utilities.N_TEST_WAIT_SERVER_CON)
     
     Utilities.Write("\n TEST   -- Create Clients ")
     
-    for i in range(commons.N_TEST_CLIENT) :
-        myBase = NetWorkComponents.RandomNetWorkComponentsWithoutPort(commons.ROUTER_UDP_PORT)
+    for i in range(Utilities.N_TEST_CLIENT) :
+        myBase = NetWorkComponents.RandomNetWorkComponentsWithoutPort(Utilities.ROUTER_UDP_PORT)
         Utilities.Write("\n TEST   -- Create Client" + str(i) + " -> " + str(myBase))
         clients.append(ClientUDP(myBase, router_nc))
          
-    for i in range(commons.N_TEST_MESSAGE) :
+    for i in range(Utilities.N_TEST_MESSAGE) :
         
-        for c in range(commons.N_TEST_CLIENT) :
+        for c in range(Utilities.N_TEST_CLIENT) :
             clients[c].SendData()
             
-    commons.EXIT_DAEMON = True
+    Utilities.EXIT_DAEMON = True
     
     tRouter.join()
     tServer.join()
     
-    for i in range(commons.N_TEST_CLIENT) :
+    for i in range(Utilities.N_TEST_CLIENT) :
         clients[i].Close()
         
     Utilities.PrintAndWrite("\n TEST   -- end TEST")

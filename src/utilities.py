@@ -1,9 +1,24 @@
 #!/usr/bin/env python3
 import os
-import commons
 
 class Utilities :
     
+    SERVER_IP = "10.10.10.1"
+    SERVER_MAC = "11:55:AB:2E:FF:EF"
+    ROUTER_IP = "192.168.1.1"
+    ROUTER_MAC = "EE:12:1B:25:0F:00"
+    ROUTER_UDP_PORT = 8085
+    ROUTER_TCP_PORT = 8086
+    LOCALHOST = "127.0.0.1"
+    BUFFER_SIZE = 4096
+    N_TEST_CLIENT = 4 # Numero di client attivi che invieranno messaggi
+    N_TEST_MESSAGE = 2 # Numero di messaggi che invia un singolo client al router
+    N_TEST_WAIT_SERVER_CON = 3 # Numero di secondi da aspettare per l'invio del prossimo messaggio
+    FILE_LOG_FOLDER = "Log"
+    FILE_LOG_FILE = "Log.txt"
+    FILE_LOG_PATH = os.path.join(os.getcwd(), FILE_LOG_FOLDER , FILE_LOG_FILE)
+    EXIT_DAEMON = None
+
     @staticmethod
     def Hex(number):
         if(number < 10) : 
@@ -20,9 +35,9 @@ class Utilities :
         f = None
         
         try:
-            if not os.path.exists(commons.FILE_LOG_PATH):
-                os.mkdir(commons.FILE_LOG_FOLDER, 0o666) 
-            f = open(commons.FILE_LOG_PATH, 'w')
+            if not os.path.exists(Utilities.FILE_LOG_PATH):
+                os.mkdir(Utilities.FILE_LOG_FOLDER, 0o666) 
+            f = open(Utilities.FILE_LOG_PATH, 'w')
         except:
             f.close()
         finally:
@@ -34,10 +49,10 @@ class Utilities :
         f = None        
         try:
             mode = 'a'
-            if not os.path.exists(commons.FILE_LOG_PATH):
-                os.mkdir(commons.FILE_LOG_FOLDER, 0o666) 
+            if not os.path.exists(Utilities.FILE_LOG_PATH):
+                os.mkdir(Utilities.FILE_LOG_FOLDER, 0o666) 
                 mode = 'w'
-            f = open(commons.FILE_LOG_PATH, mode)
+            f = open(Utilities.FILE_LOG_PATH, mode)
             f.write(log)
         except:
             f.close()
@@ -49,10 +64,10 @@ class Utilities :
         f = None
         try:
             mode = 'a'
-            if not os.path.exists(commons.FILE_LOG_PATH):
-                os.mkdir(commons.FILE_LOG_FOLDER, 0o666) 
+            if not os.path.exists(Utilities.FILE_LOG_PATH):
+                os.mkdir(Utilities.FILE_LOG_FOLDER, 0o666) 
                 mode = 'w'
-            f = open(commons.FILE_LOG_PATH, mode)
+            f = open(Utilities.FILE_LOG_PATH, mode)
             f.write(log)
         except:
             f.close()

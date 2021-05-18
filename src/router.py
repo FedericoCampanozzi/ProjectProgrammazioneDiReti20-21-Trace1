@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import socket
 import threading
-import commons
 from utilities import Utilities
 from package import Package
 from networkComponents import NetWorkComponents
@@ -19,10 +18,10 @@ class Router(NetWorkComponents):
         self.PORT = myBase.GetPort()
         
         self.__CLIENT_CON = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.__CLIENT_CON.bind((commons.LOCALHOST, commons.ROUTER_UDP_PORT))
+        self.__CLIENT_CON.bind((Utilities.LOCALHOST, Utilities.ROUTER_UDP_PORT))
         
         self.__SERVER_CON = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.__SERVER_CON.bind((commons.LOCALHOST, commons.ROUTER_TCP_PORT))
+        self.__SERVER_CON.bind((Utilities.LOCALHOST, Utilities.ROUTER_TCP_PORT))
         self.__SERVER_CON.listen(1)
         
         self.__SERVER_NC = server
@@ -43,10 +42,10 @@ class Router(NetWorkComponents):
     def __WaitToReceiveClientsData__(self) :       
         Utilities.PrintAndWrite('\n ROUTER -- Waiting to receive message from clients ...')
 
-        while not commons.EXIT_DAEMON :
+        while not Utilities.EXIT_DAEMON :
             try :
                 
-                data, address = self.__CLIENT_CON.recvfrom(commons.BUFFER_SIZE)
+                data, address = self.__CLIENT_CON.recvfrom(Utilities.BUFFER_SIZE)
                 package = Package.DecodePackage(data)
                 
                 Utilities.Write("\n ROUTER -- " + str(package))                    

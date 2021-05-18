@@ -2,7 +2,6 @@
 import socket
 import random
 from datetime import datetime
-import commons
 from utilities import Utilities
 from networkComponents import NetWorkComponents
 from package import Package
@@ -18,7 +17,7 @@ class ClientUDP(NetWorkComponents) :
         self.PORT = myBase.GetPort()
         
         self.__ROUTER_CON = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.__ROUTER_CON.connect((commons.LOCALHOST, commons.ROUTER_UDP_PORT))
+        self.__ROUTER_CON.connect((Utilities.LOCALHOST, Utilities.ROUTER_UDP_PORT))
         self.__ROUTER_NC = router
         
     def SendData(self) :

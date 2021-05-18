@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import socket
 import threading
-import commons
 from package import Package
 from networkComponents import NetWorkComponents
 from utilities import Utilities
@@ -17,7 +16,7 @@ class ServerTCP(NetWorkComponents):
         self.PORT = myBase.GetPort()
         
         self.__CON = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.__CON.connect((commons.LOCALHOST, commons.ROUTER_TCP_PORT))
+        self.__CON.connect((Utilities.LOCALHOST, Utilities.ROUTER_TCP_PORT))
         
         tServer = threading.Thread(target = self.__WaitToReceiveRouterData__)
         tServer.start()
@@ -27,9 +26,9 @@ class ServerTCP(NetWorkComponents):
         tServer.join()
         
     def __WaitToReceiveRouterData__(self) : 
-        while not commons.EXIT_DAEMON:
+        while not Utilities.EXIT_DAEMON:
             try:
-                data = self.__CON.recv(commons.BUFFER_SIZE)
+                data = self.__CON.recv(Utilities.BUFFER_SIZE)
                 
                 if len(data) > 0 :
                     package =  Package.DecodePackage(data)
