@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import socket
 import threading
+from datetime import datetime
 from utilities import Utilities
 from package import Package
 from networkComponents import NetWorkComponents
@@ -48,11 +49,13 @@ class Router(NetWorkComponents):
                 data, address = self.__CLIENT_CON.recvfrom(Utilities.BUFFER_SIZE)
                 package = Package.DecodePackage(data)
                 
-                Utilities.Write("\n ROUTER -- " + str(package))                    
+                Utilities.Write("\n ROUTER -- " + str(package) +
+                                "\n\t\t DELTA TIME : " + Utilities.DateDifference(package.GetDeltaTime(), datetime.today()))       
                 
                 package.SetSource(NetWorkComponents(self.IP, self.PORT, self.MAC))
                 package.SetDestination(self.__SERVER_NC)
                 package.SetProtocol("TCP")
+                package.SetDeltaTime(datetime.today())
                 
                 self.__SERVER_CON.send(package.Encode())
                 

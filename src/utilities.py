@@ -7,8 +7,8 @@ class Utilities :
     SERVER_MAC = "11:55:AB:2E:FF:EF"
     ROUTER_IP = "192.168.1.1"
     ROUTER_MAC = "EE:12:1B:25:0F:00"
-    ROUTER_UDP_PORT = 8085
-    ROUTER_TCP_PORT = 8086
+    ROUTER_UDP_PORT = 8091
+    ROUTER_TCP_PORT = 8092
     LOCALHOST = "127.0.0.1"
     BUFFER_SIZE = 4096
     N_TEST_CLIENT = 4 # Numero di client attivi che invieranno messaggi
@@ -74,3 +74,14 @@ class Utilities :
             f.close()
         finally:
             f.close()
+    
+    @staticmethod
+    def DateDifference(data1, data2) :
+        delta = 0.0
+        if (data1 > data2):
+            delta = (data1 - data2).total_seconds()
+        else:
+            delta = (data2 - data1).total_seconds()
+        delta = round(delta * 1000.0, 3)
+        return str(delta) + " MS"
+        

@@ -32,6 +32,7 @@ class ClientUDP(NetWorkComponents) :
         package.SetDestination(self.__ROUTER_NC)
         package.SetProtocol("UDP")
         package.SetMessage(data)
+        package.SetDeltaTime(datetime.today())
         self.__ROUTER_CON.send(package.Encode())
         Utilities.Write("\n CLIENT -- " + str(package))
     

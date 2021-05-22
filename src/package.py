@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 from networkComponents import NetWorkComponents
+from datetime import datetime
+from utilities import Utilities
 
 class Package ():
     
@@ -7,10 +9,18 @@ class Package ():
     __DESTINATION = NetWorkComponents.EmptyNetWorkComponents()
     __PROTOCOL = ""
     __MESSAGE = ""
+    __DELTA_TIME = datetime.min
     
     def __init__(self):
         self.__PROTOCOL = ""
         self.__MESSAGE = ""
+        self.__DELTA_TIME = datetime.min
+    
+    def GetDeltaTime(self) :
+        return self.__DELTA_TIME
+    
+    def SetDeltaTime(self, deltaTime) :
+        self.__DELTA_TIME = deltaTime
     
     def GetSource(self) :
         return self.__SOURCE
@@ -45,7 +55,8 @@ class Package ():
                 str(self.__SOURCE.GetPort()) + ";" +
                 str(self.__DESTINATION.GetPort()) + ";" + 
                 self.__PROTOCOL + ";" + 
-                self.__MESSAGE
+                self.__MESSAGE + ";" + 
+                self.__DELTA_TIME.strftime(Utilities.DATE_TIME_FORMAT)
             ).encode('utf8')
     
     @staticmethod  
@@ -60,6 +71,7 @@ class Package ():
         p.GetDestination().SetPort(int(vet[5]))
         p.SetProtocol(vet[6])
         p.SetMessage(vet[7])
+        p.SetDeltaTime(datetime.strptime(vet[8], Utilities.DATE_TIME_FORMAT))
         return p
     
     def __str__(self) :

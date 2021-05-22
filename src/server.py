@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import socket
 import threading
+from datetime import datetime
 from package import Package
 from networkComponents import NetWorkComponents
 from utilities import Utilities
@@ -32,7 +33,8 @@ class ServerTCP(NetWorkComponents):
                 
                 if len(data) > 0 :
                     package =  Package.DecodePackage(data)
-                    Utilities.Write("\n SERVER -- " + str(package))
+                    Utilities.Write("\n SERVER -- " + str(package) +
+                                    "\n\t\t DELTA TIME : " + Utilities.DateDifference(package.GetDeltaTime(), datetime.today()))
                     
             except Exception as e :
                 Utilities.PrintAndWrite('\n SERVER -- Error Message : ' + str(e))
