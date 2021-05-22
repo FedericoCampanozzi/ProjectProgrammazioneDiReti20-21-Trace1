@@ -18,7 +18,8 @@ class Utilities :
     FILE_LOG_FILE = "Log.txt"
     FILE_LOG_PATH = os.path.join(os.getcwd(), FILE_LOG_FOLDER , FILE_LOG_FILE)
     EXIT_DAEMON = None
-
+    DATE_TIME_FORMAT = '%Y-%m-%d %H:%M:%S.%f'
+    
     @staticmethod
     def Hex(number):
         if(number < 10) : 

@@ -22,18 +22,18 @@ class ClientUDP(NetWorkComponents) :
         
     def SendData(self) :
         data = (
-                " DateTime : " + datetime.today().strftime('%Y-%m-%d-%H:%M:%S') + 
+                " DateTime : " + datetime.today().strftime(Utilities.DATE_TIME_FORMAT) + 
                 " Temperature: " + str(random.randint(-1, 30)) + 
                 " gradi Humidity : " + str(random.randint(0, 50)) + " %"
             )
         
-        p = Package()
-        p.SetSource(NetWorkComponents(self.IP, self.PORT, self.MAC))
-        p.SetDestination(self.__ROUTER_NC)
-        p.SetProtocol("UDP")
-        p.SetMessage(data)
-        self.__ROUTER_CON.send(p.Encode())
-        Utilities.Write("\n CLIENT -- PC [" + p.GetSource().GetIP() + "] send data")
+        package = Package()
+        package.SetSource(NetWorkComponents(self.IP, self.PORT, self.MAC))
+        package.SetDestination(self.__ROUTER_NC)
+        package.SetProtocol("UDP")
+        package.SetMessage(data)
+        self.__ROUTER_CON.send(package.Encode())
+        Utilities.Write("\n CLIENT -- " + str(package))
     
     def Close(self) :
         Utilities.PrintAndWrite('\n CLIENT -- Close Connections')
